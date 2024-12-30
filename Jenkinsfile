@@ -14,31 +14,24 @@ pipeline {
 
         stage('Install Dependencies - Frontend') {
             steps {
-              
-                    bat 'npm install'
-                
+                bat 'npm install'  // Ensure this installs dependencies for the React project
             }
         }
 
-     
-        }
-
         stage('SonarQube Analysis') {
-              environment {
+            environment {
                 SONAR_TOKEN = credentials('SonarQube')
             }
             steps {
                 script {
-
-                        bat """
+                    bat """
                         %SONAR_SCANNER_PATH% ^
-                        -Dsonar.projectKey=mern-frontend^
+                        -Dsonar.projectKey=mern-frontend ^
                         -Dsonar.projectName=mern-frontend ^
                         -Dsonar.sources=. ^
                         -Dsonar.host.url=http://localhost:9000 ^
                         -Dsonar.token=${SONAR_TOKEN}
-                        """
-                    
+                    """
                 }
             }
         }
@@ -46,12 +39,8 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Build backend
-                
                     // Build frontend
-                    dir("${FRONTEND_DIR}") {
-                        bat 'npm run build'  // Or use "npm start" if you want to start the frontend server
-                    }
+                    bat 'npm run build'  // Or use "npm start" if you want to start the frontend server
                 }
             }
         }
